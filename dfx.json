@@ -2,6 +2,9 @@
   "canisters": {
     "echo": {
       "main": "src/Main.mo"
+    },
+    "whoami": {
+      "main": "src/Whoami.mo"
     }
   }
 }
