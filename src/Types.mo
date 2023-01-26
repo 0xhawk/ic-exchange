@@ -1,5 +1,6 @@
 import Result "mo:base/Result";
 import Trie "mo:base/Trie";
+import Int "mo:base/Int";
 import Principal "mo:base/Principal";
 import Nat "mo:base/Nat";
 import List "mo:base/List";
@@ -31,13 +32,29 @@ module {
         #accepted;
     };
     public type Tokens = { amount_e8s : Nat };
-
+    public type TransferArgs = { to : Principal; amount : Tokens };
+    public type UpdateSystemParamsPayload = {
+        transfer_fee : ?Tokens;
+        proposal_vote_threshold : ?Tokens;
+        proposal_submission_deposit : ?Tokens;
+    };
+    public type Vote = { #no; #yes };
+    public type VoteArgs = { vote : Vote; proposal_id : Nat };
+    public type SystemParams = {
+        transfer_fee : Tokens;
+        proposal_vote_threshold : Tokens;
+        proposal_submission_deposit : Tokens;
+    };
     public type BasicDaoStableStorage = {
         accounts : [Account];
         proposals : [Proposal];
-        // system_params: Syste
+        system_params : SystemParams;
     };
 
+    public func proposal_key(t : Nat) : Trie.Key<Nat> = {
+        key = t;
+        hash = Int.hash t;
+    };
     public func account_key(t : Principal) : Trie.Key<Principal> = {
         key = t;
         hash = Principal.hash t;
@@ -49,4 +66,14 @@ module {
         };
         s;
     };
+    public func proposals_fromArray(arr : [Proposal]) : Trie.Trie<Nat, Proposal> {
+        var s = Trie.empty<Nat, Proposal>();
+        for (proposal in arr.vals()) {
+            s := Trie.put(s, proposal_key(proposal.id), Nat.equal, proposal).0;
+        };
+        s;
+    };
+
+    public let oneToken = { amount_e8s = 10_000_000 };
+    public let zeroToken = { amount_e8s = 0 };
 };
