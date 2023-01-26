@@ -1,10 +1,13 @@
 {
   "canisters": {
     "echo": {
-      "main": "src/Main.mo"
+      "main": "src/Echo.mo"
     },
     "whoami": {
       "main": "src/Whoami.mo"
+    },
+    "dao": {
+      "main": "src/DAO.mo"
     }
   }
 }
